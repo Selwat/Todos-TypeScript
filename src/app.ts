@@ -55,64 +55,66 @@ buttonElement.addEventListener("click", () =>{
 
 //#5 Lekcja
 
+import { Task, Category } from "./types/types";
+import renderTasks from "./helpers/render-tasks.helpers.js";
+import {renderCategories} from "./helpers/render-categories.helper.js";
 
-/* <li>
-<label for="task-1">Wyrzucić smieci</label>
-<input type="checkbox" id="task-1" name="Wyrzucić smieci" />
-</li> */
 const taskNameInputElement: HTMLInputElement = document.querySelector("#name");
 const addButtonElement : HTMLButtonElement = document.querySelector("button");
 const tasksContainerElement: HTMLElement = document.querySelector(".tasks");
+const categoriesContainerElement: HTMLElement = document.querySelector(".categories");
 
-const tasks: {
-    name: string;
-    done: boolean;
-}[] = [{
-    name: "Wyrzucić śmieci",
-    done: false,
-}, {
-    name: "Póść na siłkę",
-    done: true,
-}, {
-    name: "Nakarmić kota",
-    done: false,
-}];
+let selectedCategory : Category ;
 
 
 
-const render = () =>{
-    tasksContainerElement.innerHTML = "";
-    tasks.forEach((task, index) => {
-        const taskElement: HTMLElement = document.createElement("li");
-        const id: string = `task-${index}`;
 
-        const labelElement: HTMLElement = document.createElement("label");
-        labelElement.innerHTML = task.name;
-        labelElement.setAttribute("for", id);
+const categories: Category[] = ["general", "work", "gym", "hobby"];
 
-        const checkboxElement: HTMLInputElement = document.createElement("input");
-        checkboxElement.type = "checkbox";
-        checkboxElement.name= task.name;
-        checkboxElement.id = id;
-        checkboxElement.checked = task.done;
-        checkboxElement.addEventListener("change", () =>{
-            task.done = !task.done
-        })
-        taskElement.appendChild(labelElement);
-        taskElement.appendChild(checkboxElement);
+const tasks: Task[] = [
+    {
+        name: "Wyrzucić śmieci",
+        done: false,
+        category: "hobby",
+    }, 
+    {
+        name: "Póść na siłkę",
+        done: true,
+        category: "gym",
+    }, 
+    {
+        name: "Nakarmić kota",
+        done: false,
+        category: "work",
+    },
+];
 
-        tasksContainerElement.appendChild(taskElement);
-    });
+
+
+
+
+
+
+const addTask = (task: Task) =>{
+    tasks.push(task);
 };
 
-const addTask = (taskName: string) =>{
-    tasks.push({name: taskName, done:false });
-};
+const updateSelectedCategory =(newCategory: Category) =>{
+    selectedCategory = newCategory;
+}
 
 addButtonElement.addEventListener("click", (event: Event) =>{
+ 
     event.preventDefault();
-    addTask(taskNameInputElement.value);
-    render();
+    addTask({
+        name: taskNameInputElement.value,
+        done: false, 
+        category: selectedCategory,
+    });
+    renderTasks(tasks, tasksContainerElement);
 });
 
-render();
+renderCategories(categories, 
+    categoriesContainerElement, 
+    updateSelectedCategory);
+renderTasks(tasks, tasksContainerElement);
